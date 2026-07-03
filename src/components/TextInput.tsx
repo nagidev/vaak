@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import Button from './Button';
 
@@ -17,15 +17,29 @@ const TextInput = ({ placeholder = 'Enter text here...', value = '', onChange, o
 	const [text, setText] = useState(value);
 	const [fullscreen, setFullscreen] = useState(false);
 
+	const inputRef = useRef(null);
+	const fullscreenInputRef = useRef(null);
+
 	const handleSubmit = () => {
 		onSubmit && onSubmit(text);
 		setText('');
-		setFullscreen(false)
+		setFullscreen(false);
 	};
 
 	useEffect(() => {
 		onChange && onChange(text);
 	}, [text]);
+
+	useEffect(() => {
+		if (inputRef.current && !fullscreen) {
+			inputRef.current.focus();
+		}
+
+		if (fullscreenInputRef.current && fullscreen) {
+			setTimeout(() => { fullscreenInputRef.current.focus(); }
+				, 100);
+		}
+	}, [fullscreen]);
 
 	return (
 		<>
@@ -33,6 +47,7 @@ const TextInput = ({ placeholder = 'Enter text here...', value = '', onChange, o
 				<textarea
 					placeholder={placeholder}
 					rows={4}
+					ref={inputRef}
 					value={text}
 					onChange={(e) => setText(e.target.value)}
 					className='block w-full resize-none p-2 rounded bg-base-hard border-2 border-base accent-primary focus:outline-none focus:border-primary focus:border-2 shadow-lg'
@@ -60,7 +75,8 @@ const TextInput = ({ placeholder = 'Enter text here...', value = '', onChange, o
 				>
 					<textarea
 						placeholder={placeholder}
-						rows={32}
+						rows={20}
+						ref={fullscreenInputRef}
 						value={text}
 						onChange={(e) => setText(e.target.value)}
 						className='w-full resize-none md:resize-y p-2 rounded bg-base-hard border-2 border-base accent-primary focus:outline-none focus:border-primary focus:border-2 shadow-lg'
