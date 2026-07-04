@@ -40,7 +40,7 @@ const Navbar = ({ BrandLogo, brandName, navItems, selected }: NavbarProps) => {
 				</div>
 				{navItems &&
 					<div className={`transition-all transition-discrete duration-500 ${showMenu ? 'max-h-[900px] opacity-100' : 'max-h-0 opacity-0'} md:block overflow-hidden w-full md:max-h-full md:w-auto md:opacity-100`}>
-						<ul className={`m-4 md:m-0 p-4 md:p-0 rounded bg-base-hard md:bg-transparent border border-base-soft md:border-none flex flex-col md:flex-row gap-2 md:gap-4`}>
+						<ul className={`m-4 mt-0 md:m-0 rounded bg-base-hard md:bg-transparent border border-base-soft md:border-none flex flex-col md:flex-row md:gap-4`}>
 							{navItems.map(item => (
 								<li key={item}>
 									<a

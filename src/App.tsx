@@ -4,25 +4,29 @@ import './App.css';
 
 import Navbar from './components/Navbar';
 import IllustratedMessage from './components/IllustratedMessage';
-import TextInput from './components/TextInput';
+import Button from './components/Button';
 import DialogueEditor from './components/DialogueEditor';
 
 import IconBrand from './assets/IconBrand';
 import IconBubble from './assets/IconBubble';
-
-const showDebug = false;
+import IconPlus from './assets/IconPlus';
+import Debug from './components/Debug';
 
 function App() {
-  const [data, setData] = useState<{}>({});
+  const [data, setData] = useState({});
 
-  const handleSubmit = (value: string) => {
-    if ( value.trim() === '' ) return;
-
+  const addNode = () => {
     setData((prevData) => {
       const keys = Object.keys(prevData).map(Number);
       const maxKey = keys.length > 0 ? Math.max(...keys) : 0;
-      return { ...prevData, [maxKey + 1]: { text: value } }
+      return { ...prevData, [maxKey + 1]: { speaker: '', text: '' } }
     });
+  };
+
+  const deleteNode = (key: number) => {
+    const newData = { ...data };
+    delete newData[key];
+    setData(newData);
   };
 
   return (
@@ -33,7 +37,7 @@ function App() {
         navItems={['Home', 'Settings']}
         selected='Home'
       />
-      <div className='max-w-screen-xl p-4 mx-auto'>
+      <div className='max-w-screen-xl p-2 mx-auto'>
         {(Object.keys(data).length === 0) &&
           <IllustratedMessage
             Icon={IconBubble}
@@ -41,14 +45,25 @@ function App() {
             body='Add new dialogues from the input to start creating your dialogue flow.'
           />
         }
-        <div className='mb-4 flex flex-col gap-2'>
+        <div className='mb-2 flex flex-col gap-2'>
           {Object.entries(data).map(([key, value]: Array<any>) => (
-            <DialogueEditor id={key} value={value} />
+            <DialogueEditor
+              key={key}
+              id={key}
+              value={value}
+              onDeleteRequest={() => deleteNode(key)}
+            />
           ))}
         </div>
-        {showDebug && <p className='rounded mb-2 p-2 bg-green-900 border border-green-500'><b>Debug</b><br />{JSON.stringify(data)}</p>}
-        <div className='sticky bottom-4'>
-          <TextInput onSubmit={handleSubmit} />
+        <Debug show={false}>{JSON.stringify(data)}</Debug>
+        <div className='sticky bottom-4 my-2 flex justify-center'>
+          <Button
+            className='md:w-100 grow-1 md:grow-0 text-xl'
+            onClick={addNode}
+          >
+            <IconPlus className='w-10 h-10 fill-base-hard' />
+            Add dialogue
+          </Button>
         </div>
       </div>
     </div>

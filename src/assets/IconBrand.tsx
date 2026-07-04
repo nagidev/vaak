@@ -1,6 +1,6 @@
 
 interface IconBrandProps {
-	className: string;
+	className?: string;
 };
 
 const IconBrand = ({ className }: IconBrandProps) => {
