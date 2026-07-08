@@ -1,32 +1,47 @@
-import { useState, type Key } from 'react';
+import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import type { DialogueCollection, DialogueData, Option } from '../types';
 
 import Button from './Button';
 import TextField from './TextField';
 import TextArea from './TextArea';
 
-import IconDelete from '../assets/IconDelete';
 import Dropdown from './Dropdown';
 import Debug from './Debug';
 import Dialogue from './Dialogue';
 
+import IconDelete from '../assets/IconDelete';
+
 interface DialogueEditorProps {
-	id: Key;
-	value: { speaker: string, text: string };
+	id: string;
+	data: DialogueCollection;
+	onChange?: (value: DialogueData, id: string) => void;
 	onDeleteRequest?: () => void;
 };
 
-const DialogueEditor = ({ id, value, onDeleteRequest }: DialogueEditorProps) => {
-	const [options, setOptions] = useState<Array<{ id: string, text: string, link: number }>>([{ id: '0', text: '', link: 0 }]);
+const DialogueEditor = ({ id, data, onChange, onDeleteRequest }: DialogueEditorProps) => {
+	const [dData, setDData] = useState<DialogueData>(data[id]);
+	const [options, setOptions] = useState<Array<Option>>(data[id].options);
 	const [showDeleteDialogue, setShowDeleteDialogue] = useState(false);
 
-	const handleOptionChange = (value: string, index: number) => {
+	useEffect(() => {
+		if (options.length === 0) {
+			setOptions([{ id: uuidv4(), text: '', link: 0 }]);
+		}
+	}, []);
+
+	useEffect(() => {
+		let finalData: DialogueData = { ...dData, options };
+		onChange && onChange(finalData, id);
+	}, [dData, options]);
+
+	const handleOptionChange = (value: Option, index: number) => {
 		let newOptions = [...options];
-		if (value !== '' && index === (options.length - 1)) {
+		if (value.text !== '' && index === (options.length - 1)) {
 			newOptions.push({ id: uuidv4(), text: '', link: 0 });
 		}
 
-		newOptions[index].text = value;
+		newOptions[index] = value;
 		setOptions(newOptions);
 	};
 
@@ -50,22 +65,29 @@ const DialogueEditor = ({ id, value, onDeleteRequest }: DialogueEditorProps) => 
 				</Button>
 			</div>
 			<TextField
-				value={value.speaker}
+				value={data[id].speaker}
 				placeholder='Enter speaker name...'
+				onChange={(value) => setDData((prevDData) => ({ ...prevDData, speaker: value }))}
 			/>
 			<TextArea
-				value={value.text}
+				value={data[id].text}
 				placeholder='Enter dialogue here...'
+				onChange={(value) => setDData((prevDData) => ({ ...prevDData, text: value }))}
 			/>
 			{options.map((option, index) => (
 				<div key={option.id} className='flex flex-row gap-2'>
 					<TextField
 						placeholder='Enter option here...'
 						value={option.text}
-						onChange={(value) => handleOptionChange(value, index)}
+						onChange={(value) => handleOptionChange({ ...options[index], text: value }, index)}
 						onBlur={() => handleOptionBlur(options[index].text, index)}
 					/>
-					<Dropdown items={[0, 1, 2]} selected={0} prefix='#' />
+					<Dropdown
+						items={[0, 1, 2]}
+						selected={0}
+						onChange={(value) => handleOptionChange({ ...options[index], link: Number(value) }, index)}
+						prefix='#'
+					/>
 				</div>
 			))}
 			<Dialogue

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Button from './Button';
 
 import IconMenu from '../assets/IconMenu';
+import { Link } from 'wouter';
 
 interface NavbarProps {
 	BrandLogo?: any;
@@ -20,7 +21,7 @@ const Navbar = ({ BrandLogo, brandName, navItems, selected }: NavbarProps) => {
 	}, [selected]);
 
 	return (
-		<nav className='sticky top-0 w-full rounded-b bg-base shadow-md'>
+		<nav className='sticky top-0 z-20 w-full rounded-b bg-base shadow-md'>
 			<div className='flex flex-wrap justify-between items-end md:mx-auto md:max-w-screen-xl'>
 				<div className='flex flex-row gap-2 p-4 group cursor-pointer'>
 					{BrandLogo &&
@@ -43,13 +44,13 @@ const Navbar = ({ BrandLogo, brandName, navItems, selected }: NavbarProps) => {
 						<ul className={`m-4 mt-0 md:m-0 rounded bg-base-hard md:bg-transparent border border-base-soft md:border-none flex flex-col md:flex-row md:gap-4`}>
 							{navItems.map(item => (
 								<li key={item}>
-									<a
-										href='#'
+									<Link
+										href={`/${item.toLowerCase()}`}
 										className={`transition-all block p-4 rounded md:rounded-none ${(navItem === item) ? 'bg-primary text-base-hard md:text-primary md:border-primary' : 'bg-transparent hover:bg-base-soft active:bg-base md:text-white-hard md:hover:text-white md:hover:bg-transparent md:active:bg-transparent md:border-transparent'} md:bg-transparent md:border-b-4 md:text-xl font-bold`}
 										onClick={() => setNavItem(item)}
 									>
 										{item}
-									</a>
+									</Link>
 								</li>
 							))}
 						</ul>

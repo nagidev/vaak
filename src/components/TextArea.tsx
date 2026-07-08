@@ -46,7 +46,7 @@ const TextArea = ({ placeholder = 'Enter text here...', value = '', onChange }: 
 				</Button>
 			</div>
 			<div
-				className={`${fullscreen ? 'opacity-100' : 'opacity-0 invisible'} transition-all fixed top-0 left-0 z-10 w-full h-screen bg-base-hard/70`}
+				className={`${fullscreen ? 'opacity-100' : 'opacity-0 invisible'} transition-all fixed top-0 left-0 z-30 w-full h-screen bg-base-hard/70`}
 				onClick={(e) => { if (e.target === e.currentTarget) setFullscreen(false) }}
 			>
 				<div
