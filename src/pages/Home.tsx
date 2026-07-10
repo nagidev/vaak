@@ -2,25 +2,24 @@ import { useEffect, useState } from 'react';
 import type { DialogueCollection, DialogueData } from '../types';
 import { DEFAULT_DIALOGUE_DATA } from '../types';
 
-import { useSettings } from '../contexts/SettingsContext';
-
 import Button from '../components/Button';
 import DialogueEditor from '../components/DialogueEditor';
 import IllustratedMessage from '../components/IllustratedMessage';
-import Debug from '../components/Debug';
+import DialoguePlayer from '../components/DialoguePlayer';
 
 import IconBubble from '../assets/IconBubble';
 import IconPlus from '../assets/IconPlus';
 
 interface HomeProps {
+	start: string;
 	value: DialogueCollection;
 	onChange: (value: DialogueCollection) => void;
+	onStartRequest: (key: string) => void;
 };
 
-const Home = ({ value = {}, onChange }: HomeProps) => {
+const Home = ({ start, value = {}, onChange, onStartRequest }: HomeProps) => {
 	const [data, setData] = useState<DialogueCollection>(value);
-
-  const { debug } = useSettings();
+	const [playing, setPlaying] = useState<string>('');
 
 	const addNode = () => {
 		setData((prevData) => {
@@ -46,7 +45,6 @@ const Home = ({ value = {}, onChange }: HomeProps) => {
 
 	return (
 		<div className='max-w-screen-xl p-2 mx-auto'>
-      <Debug show={debug}>{JSON.stringify(data)}</Debug>
 			{(Object.keys(data).length === 0) &&
 				<IllustratedMessage
 					Icon={IconBubble}
@@ -59,8 +57,11 @@ const Home = ({ value = {}, onChange }: HomeProps) => {
 					<DialogueEditor
 						key={key}
 						id={key}
+						isStart={key === start}
 						data={data}
 						onChange={updateNode}
+						onStartRequest={onStartRequest}
+						onPlayRequest={setPlaying}
 						onDeleteRequest={() => deleteNode(key)}
 					/>
 				))}
@@ -74,6 +75,11 @@ const Home = ({ value = {}, onChange }: HomeProps) => {
 					Add dialogue
 				</Button>
 			</div>
+			<DialoguePlayer
+				startKey={playing}
+				data={data}
+				onClose={() => setPlaying('')}
+			/>
 		</div>
 	);
 };

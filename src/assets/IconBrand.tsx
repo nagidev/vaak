@@ -1,9 +1,6 @@
+import type { IconProps } from '../types';
 
-interface IconBrandProps {
-	className?: string;
-};
-
-const IconBrand = ({ className }: IconBrandProps) => {
+const IconBrand = ({ className }: IconProps) => {
 	return (
 		<svg
 			className={className}

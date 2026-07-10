@@ -1,9 +1,6 @@
+import type { IconProps } from '../types';
 
-interface IconFullscreenProps {
-	className?: string;
-};
-
-const IconFullscreen = ({ className }: IconFullscreenProps) => {
+const IconFullscreen = ({ className }: IconProps) => {
 	return (
 		<svg
 			className={className}

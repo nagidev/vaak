@@ -1,8 +1,6 @@
-interface IconBubbleProps {
-	className?: string;
-};
+import type { IconProps } from '../types';
 
-const IconBubble = ({ className }: IconBubbleProps) => {
+const IconBubble = ({ className }: IconProps) => {
 	return (
 		<svg
 			className={className}

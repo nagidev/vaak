@@ -36,6 +36,7 @@ const Dialogue = ({
 	const handleAction = () => {
 		setShowing(false);
 		onAction && onAction();
+		onClose && onClose();
 	}
 
 	return (

@@ -17,3 +17,12 @@ export const DEFAULT_DIALOGUE_DATA: DialogueData = {
 };
 
 export type DialogueCollection = Record<string, DialogueData>;
+
+export interface DialogueFile {
+	start: string;
+	data: DialogueCollection;
+};
+
+export interface IconProps {
+	className?: string;
+};
