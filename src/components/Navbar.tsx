@@ -1,20 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 import Button from './Button';
 
 import IconMenu from '../assets/IconMenu';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 
 interface NavbarProps {
 	BrandLogo?: any;
 	brandName?: string;
 	navItems?: string[];
 	selected?: string;
+	ctaIcons?: ReactNode[];
+	ctaCallbacks?: Array<() => void>;
 };
 
-const Navbar = ({ BrandLogo, brandName, navItems, selected }: NavbarProps) => {
+const Navbar = ({ BrandLogo, brandName, navItems, selected, ctaIcons, ctaCallbacks }: NavbarProps) => {
 	const [showMenu, setShowMenu] = useState(false);
 	const [navItem, setNavItem] = useState(selected);
+
+	const [_, navigate] = useLocation();
 
 	useEffect(() => {
 		setNavItem(selected);
@@ -23,13 +27,22 @@ const Navbar = ({ BrandLogo, brandName, navItems, selected }: NavbarProps) => {
 	return (
 		<nav className='sticky top-0 z-20 w-full rounded-b bg-base shadow-md'>
 			<div className='flex flex-wrap justify-between items-end md:mx-auto md:max-w-screen-xl'>
-				<div className='flex flex-row gap-2 p-4 group cursor-pointer'>
+				<div className='md:grow-1 p-4 group cursor-pointer flex flex-row gap-2' onClick={() => navigate('/')}>
 					{BrandLogo &&
 						<BrandLogo className='h-10 w-10 fill-white group-hover:fill-primary transition-all' />
 					}
-					<h1 className='font-bold text-3xl'>{brandName}</h1>
+					<h1 className='font-bold text-3xl group-hover:text-primary transition-all'>{brandName}</h1>
 				</div>
-				<div className='mx-4 my-auto'>
+				<div className='mx-4 my-auto flex flex-row'>
+					{ctaIcons &&
+						ctaIcons.map((ctaIcon, index) => (
+							<Button
+								isQuiet={true}
+								onClick={ctaCallbacks && ctaCallbacks[index]}
+							>
+								{ctaIcon}
+							</Button>
+						))}
 					<Button
 						className='md:hidden'
 						isQuiet={true}

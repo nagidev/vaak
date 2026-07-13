@@ -66,6 +66,7 @@ const DialoguePlayer = ({ startKey, data, onClose }: DialoguePlayerProps) => {
 						:
 						options.map(option => (
 							<Button
+								key={option.id}
 								className='text-white'
 								isQuiet={true}
 								onClick={() => setCurrentKey(option.link.toString())}

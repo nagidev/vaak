@@ -23,6 +23,8 @@ export interface DialogueFile {
 	data: DialogueCollection;
 };
 
+export const DEFAULT_DIALOGUE_FILE: DialogueFile = { start: '0', data: {} };
+
 export interface IconProps {
 	className?: string;
 };

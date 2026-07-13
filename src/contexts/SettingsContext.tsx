@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 interface SettingsContextType {
 	debug: boolean;
@@ -8,7 +8,12 @@ interface SettingsContextType {
 const SettingsContext = createContext<SettingsContextType | null>(null);
 
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
-	const [debug, setDebug] = useState(false);
+	const savedSettings = localStorage.getItem('user_settings');
+	const [debug, setDebug] = useState(savedSettings ? JSON.parse(savedSettings).debug : false);
+
+	useEffect(() => {
+		localStorage.setItem('user_settings', JSON.stringify({ debug }));
+	}, [debug]);
 
 	return (
 		<SettingsContext.Provider value={{ debug, setDebug }}>
