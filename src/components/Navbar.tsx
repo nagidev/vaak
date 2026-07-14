@@ -5,7 +5,6 @@ import Button from './Button';
 import IconMenu from '../assets/IconMenu';
 import { Link, useLocation } from 'wouter';
 import IconSearch from '../assets/IconSearch';
-import TextField from './TextField';
 import IconClose from '../assets/IconClose';
 
 interface NavbarProps {
@@ -23,6 +22,7 @@ const Navbar = ({ BrandLogo, brandName, navItems, ctaItems, selected, onNav, onC
 	const [showMenu, setShowMenu] = useState(false);
 	const [navItem, setNavItem] = useState(selected);
 	const [showSearch, setShowSearch] = useState(false);
+	const [searchText, setSearchText] = useState('');
 
 	const [_, navigate] = useLocation();
 
@@ -33,6 +33,14 @@ const Navbar = ({ BrandLogo, brandName, navItems, ctaItems, selected, onNav, onC
 	useEffect(() => {
 		onNav && onNav(navItem as string);
 	}, [navItem]);
+
+	useEffect(() => {
+		if (!showSearch) {
+			onSearch && onSearch('');
+			return;
+		}
+		onSearch && onSearch(searchText);
+	}, [showSearch, searchText]);
 
 	return (
 		<nav className='sticky top-0 z-20 w-full rounded-b bg-base shadow-md'>
@@ -48,8 +56,9 @@ const Navbar = ({ BrandLogo, brandName, navItems, ctaItems, selected, onNav, onC
 					{onSearch &&
 						<>
 							<Button
-								isQuiet={true}
-								onClick={() => { onSearch('wubba'); setShowSearch(!showSearch) }}
+								isQuiet={!showSearch}
+								onClick={() => { setShowSearch(!showSearch) }}
+								className={`${showSearch ? 'rounded-r-none' : ''}`}
 							>
 								<IconSearch className='w-9 h-9 fill-white' />
 							</Button>
@@ -58,16 +67,23 @@ const Navbar = ({ BrandLogo, brandName, navItems, ctaItems, selected, onNav, onC
 							>
 								<input
 									type='text'
-									className='grow-1 w-full'
+									placeholder='Search for node...'
+									value={searchText}
+									onChange={(e) => setSearchText(e.target.value)}
+									className='grow-1 w-full p-2 accent-transparent focus:outline-none'
 								/>
-								<Button isQuiet={true}>
+								<Button
+									isQuiet={true}
+									onClick={() => setSearchText('')}
+									className={`${(searchText === '') ? 'hidden' : ''} rounded-l-none`}
+								>
 									<IconClose className='w-9 h-9 fill-white' />
 								</Button>
 							</div>
 						</>
 					}
 					<div
-						className={`transition-all ${showSearch ? 'opacity-0 invisible max-w-0' : 'opacity-100 visible max-w-screen'} md:hidden`}
+						className={`transition-all ${showSearch ? 'opacity-0 hidden' : 'opacity-100 visible'} md:hidden`}
 					>
 						<Button
 							className='md:hidden'
@@ -76,9 +92,9 @@ const Navbar = ({ BrandLogo, brandName, navItems, ctaItems, selected, onNav, onC
 							onBlur={() => setShowMenu(false)}
 						>
 							{showMenu ?
-								<IconClose className='w-10 h-10 fill-white' />
+								<IconClose className='w-9 h-9 fill-white' />
 								:
-								<IconMenu className='w-10 h-10 fill-white' />
+								<IconMenu className='w-9 h-9 fill-white' />
 							}
 						</Button>
 					</div>
@@ -100,11 +116,11 @@ const Navbar = ({ BrandLogo, brandName, navItems, ctaItems, selected, onNav, onC
 							))}
 							{navItems.map(item => (
 								<Link
+									key={item[2]}
 									href={`/${item[2]}`}
 									onClick={() => setNavItem(item[2])}
 								>
 									<li
-										key={item[2]}
 										className={`transition-all relative block md:inline-block p-4 rounded md:rounded-none ${(navItem === item[2]) ? 'bg-primary text-base-hard md:border-primary selected' : 'bg-transparent hover:bg-base-soft active:bg-base md:hover:bg-transparent md:active:bg-transparent md:border-transparent'} md:bg-transparent md:border-b-4 font-bold flex flex-row gap-2 content-center items-center group`}
 									>
 										{item[1]}

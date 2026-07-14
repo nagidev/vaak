@@ -10,18 +10,21 @@ import DialoguePlayer from '../components/DialoguePlayer';
 import IconBubble from '../assets/IconBubble';
 import IconPlus from '../assets/IconPlus';
 import IconUpload from '../assets/IconUpload';
+import IconSearch from '../assets/IconSearch';
 
 interface HomeProps {
 	start: string;
 	value: DialogueCollection;
+	filter?: string;
 	onChange: (value: DialogueCollection) => void;
 	onStartRequest: (key: string) => void;
 	onUploadRequest: () => void;
 };
 
-const Home = ({ start, value = {}, onChange, onStartRequest, onUploadRequest }: HomeProps) => {
+const Home = ({ start, value = {}, filter = '', onChange, onStartRequest, onUploadRequest }: HomeProps) => {
 	const [data, setData] = useState<DialogueCollection>(value);
 	const [playing, setPlaying] = useState<string>('');
+	const [filteredData, setFilteredData] = useState<DialogueCollection>(data);
 
 	const addNode = () => {
 		setData((prevData) => {
@@ -54,6 +57,23 @@ const Home = ({ start, value = {}, onChange, onStartRequest, onUploadRequest }: 
 		onChange(data);
 	}, [data]);
 
+	useEffect(() => {
+		if (filter === '') {
+			setFilteredData({});
+		} else {
+			setFilteredData(Object.keys(data)
+				.filter(key => {
+					const d: DialogueData = data[key];
+					return key.includes(filter) || d.speaker.includes(filter) || d.text.includes(filter);
+				})
+				.reduce((obj: DialogueCollection, key) => {
+					obj[key] = data[key];
+					return obj;
+				}, {})
+			);
+		}
+	}, [filter]);
+
 	return (
 		<div className='max-w-screen-xl p-2 mx-auto'>
 			{(Object.keys(data).length === 0) &&
@@ -63,21 +83,50 @@ const Home = ({ start, value = {}, onChange, onStartRequest, onUploadRequest }: 
 					body='Add new dialogues from the input to start creating your dialogue flow.'
 				/>
 			}
-			<div className='mb-2 flex flex-col gap-2'>
-				{Object.keys(data).map((key) => (
-					<DialogueEditor
-						key={key}
-						id={key}
-						isStart={key === start}
-						data={data}
-						onChange={updateNode}
-						onStartRequest={onStartRequest}
-						onPlayRequest={setPlaying}
-						onDeleteRequest={() => deleteNode(key)}
-					/>
-				))}
+			<div className='dialogues mb-2 flex flex-col gap-2'>
+				{(filter === '') ?
+					<>
+						{Object.keys(data).map((key) => (
+							<DialogueEditor
+								key={key}
+								id={key}
+								isStart={key === start}
+								data={data}
+								onChange={updateNode}
+								onStartRequest={onStartRequest}
+								onPlayRequest={setPlaying}
+								onDeleteRequest={() => deleteNode(key)}
+							/>
+						))}
+					</>
+					:
+					<>
+						{(Object.keys(filteredData).length === 0) ?
+							<IllustratedMessage
+								Icon={IconSearch}
+								heading='No results found'
+								body='Try searching for something else.'
+							/>
+							:
+							<>
+								{Object.keys(filteredData).map((key) => (
+									<DialogueEditor
+										key={key}
+										id={key}
+										isStart={key === start}
+										data={data}
+										onChange={updateNode}
+										onStartRequest={onStartRequest}
+										onPlayRequest={setPlaying}
+										onDeleteRequest={() => deleteNode(key)}
+									/>
+								))}
+							</>
+						}
+					</>
+				}
 			</div>
-			<div className='sticky bottom-4 my-2 flex justify-center'>
+			<div className={`${(filter !== '') && 'hidden'} sticky bottom-4 my-2 flex justify-center`}>
 				<Button
 					className='md:w-100 grow-1 md:grow-0 justify-center text-xl shadow-xl'
 					onClick={addNode}

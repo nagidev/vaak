@@ -27,9 +27,7 @@ function App() {
   const [file, setFile] = useState<DialogueFile>(tempFile ? JSON.parse(tempFile) : DEFAULT_DIALOGUE_FILE);
   const fileInputRef = useRef(null);
 
-  const handleSearch = (value: string) => {
-    console.log(value)
-  };
+  const [searchText, setSearchText] = useState('');
 
   const handleCta = (value: string) => {
     switch (value) {
@@ -94,29 +92,21 @@ function App() {
         ]}
         selected={navTab}
         onCta={handleCta}
-        onSearch={handleSearch}
+        onSearch={setSearchText}
       />
-      <Debug>{JSON.stringify(file)}</Debug>
+      <Debug>{JSON.stringify(searchText)}</Debug>
       <Switch>
         <Route path='/'>
           <Home
             start={file.start}
             value={file.data}
+            filter={searchText}
             onChange={(newData) => setFile(prevFile => ({ ...prevFile, data: newData }))}
             onStartRequest={(newStart) => setFile(prevFile => ({ ...prevFile, start: newStart }))}
             onUploadRequest={() => fileInputRef.current.click()}
           />
-          <input
-            type='file'
-            accept='application/json'
-            ref={fileInputRef}
-            onChange={uploadFile}
-            className='hidden'
-          />
         </Route>
         <Route path='/home'><Redirect to='/' /></Route>
-        <Route path='/download'><Redirect to='/' /></Route>
-        <Route path='/upload'><Redirect to='/' /></Route>
         <Route path='/settings'><Settings /></Route>
         <Route>
           <IllustratedMessage
@@ -126,6 +116,13 @@ function App() {
           />
         </Route>
       </Switch>
+      <input
+        type='file'
+        accept='application/json'
+        ref={fileInputRef}
+        onChange={uploadFile}
+        className='hidden'
+      />
     </div>
   )
 }
