@@ -12,19 +12,35 @@ import Home from './pages/Home';
 import Settings from './pages/Settings';
 
 import IconBrand from './assets/IconBrand';
-import IconSearch from './assets/IconSearch';
-import IconDownload from './assets/IconDownload';
 import IconSignPost from './assets/IconSignPost';
+import IconDownload from './assets/IconDownload';
+import IconUpload from './assets/IconUpload';
+import IconHome from './assets/IconHome';
+import IconSettings from './assets/IconSettings';
 
 function App() {
   const [location, navigate] = useLocation();
-  const [navTab, setNavTab] = useState('Home');
+  const [navTab, setNavTab] = useState('home');
+  const navIconClass = 'w-9 h-9 fill-white group-[.selected]:fill-base-hard md:group-[.selected]:fill-primary';
 
   const tempFile = localStorage.getItem('temp_file');
   const [file, setFile] = useState<DialogueFile>(tempFile ? JSON.parse(tempFile) : DEFAULT_DIALOGUE_FILE);
   const fileInputRef = useRef(null);
 
-  const searchNode = () => { };
+  const handleSearch = (value: string) => {
+    console.log(value)
+  };
+
+  const handleCta = (value: string) => {
+    switch (value) {
+      case 'download':
+        downloadFile();
+        break;
+      case 'upload':
+        fileInputRef.current.click();
+        break;
+    }
+  };
 
   const downloadFile = () => {
     const jsonString = JSON.stringify(file, null, 2);
@@ -47,7 +63,7 @@ function App() {
     reader.onload = async (e) => {
       if (!e.target) return;
       setFile(JSON.parse((e.target.result as string)));
-      navigate('/home')
+      navigate('/home');
     };
     if (e.target.files) {
       reader.readAsText(e.target.files[0]);
@@ -56,7 +72,7 @@ function App() {
 
   useEffect(() => {
     const curLocation = location.split('/')[1];
-    setNavTab(curLocation === '' ? 'Home' : curLocation.replace(/\b\w/g, s => s.toUpperCase()));
+    setNavTab(curLocation === '' ? 'home' : curLocation);
   }, [location]);
 
   useEffect(() => {
@@ -68,16 +84,17 @@ function App() {
       <Navbar
         BrandLogo={IconBrand}
         brandName='Vaak'
-        navItems={['Home', 'Settings']}
+        navItems={[
+          ['Home', <IconHome className={navIconClass} />, 'home'],
+          ['Settings', <IconSettings className={navIconClass} />, 'settings'],
+        ]}
+        ctaItems={[
+          ['Download', <IconDownload className={navIconClass} />, 'download'],
+          ['Upload', <IconUpload className={navIconClass} />, 'upload'],
+        ]}
         selected={navTab}
-        ctaIcons={[
-          <IconSearch className='w-9 h-9 fill-white' />,
-          <IconDownload className='w-9 h-9 fill-white' />,
-        ]}
-        ctaCallbacks={[
-          searchNode,
-          downloadFile,
-        ]}
+        onCta={handleCta}
+        onSearch={handleSearch}
       />
       <Debug>{JSON.stringify(file)}</Debug>
       <Switch>
@@ -98,6 +115,8 @@ function App() {
           />
         </Route>
         <Route path='/home'><Redirect to='/' /></Route>
+        <Route path='/download'><Redirect to='/' /></Route>
+        <Route path='/upload'><Redirect to='/' /></Route>
         <Route path='/settings'><Settings /></Route>
         <Route>
           <IllustratedMessage

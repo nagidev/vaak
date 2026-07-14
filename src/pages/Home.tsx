@@ -88,12 +88,12 @@ const Home = ({ start, value = {}, onChange, onStartRequest, onUploadRequest }: 
 			</div>
 			{(Object.keys(data).length === 0) &&
 				<div className='flex flex-col items-stretch md:items-center'>
-					<div className='w-full my-20'>
+					<div className='w-full my-10'>
 						<h1 className='text-center text-2xl text-white-hard font-bold'>Or</h1>
 						<p className='text-center text-white-hard'>Upload your dialogue JSON file.</p>
 					</div>
 					<Button
-						className='md:w-100 grow-1 md:grow-0 justify-center text-xl shadow-xl'
+						className='md:w-100 grow-1 md:grow-0 justify-center text-xl'
 						onClick={onUploadRequest}
 					>
 						<IconUpload className='w-10 h-10 fill-base-hard' />

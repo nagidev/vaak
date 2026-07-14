@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 
 interface TextFieldProps {
+	className?: string;
+	isQuiet?: boolean;
 	placeholder?: string;
 	value?: string;
 	onChange?: (newValue: string) => void;
 	onBlur?: () => void;
 };
 
-const TextField = ({ placeholder = 'Enter text here...', value = '', onChange, onBlur }: TextFieldProps) => {
+const TextField = ({ className, isQuiet, placeholder = 'Enter text here...', value = '', onChange, onBlur }: TextFieldProps) => {
 	const [text, setText] = useState(value);
 
 	useEffect(() => {
@@ -15,13 +17,13 @@ const TextField = ({ placeholder = 'Enter text here...', value = '', onChange, o
 	}, [text]);
 
 	return (
-		<textarea
+		<input
 			placeholder={placeholder}
-			rows={1}
+			type='text'
 			value={text}
 			onChange={(e) => setText(e.target.value)}
 			onBlur={() => onBlur && onBlur()}
-			className='block w-full resize-none p-2 rounded bg-base-hard border-2 border-base accent-primary focus:outline-none focus:border-primary focus:border-2'
+			className={`block w-full resize-none p-2 rounded ${isQuiet?'bg-transparent border-2 border-transparent accent-transparent focus:outline-none focus:border-transparent focus:border-2':'bg-base-hard border-2 border-base accent-primary focus:outline-none focus:border-primary focus:border-2'} ${className}`}
 		/>
 	);
 };
