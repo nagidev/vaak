@@ -25,7 +25,7 @@ function App() {
 
   const tempFile = localStorage.getItem('temp_file');
   const [file, setFile] = useState<DialogueFile>(tempFile ? JSON.parse(tempFile) : DEFAULT_DIALOGUE_FILE);
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [searchText, setSearchText] = useState('');
 
@@ -35,7 +35,7 @@ function App() {
         downloadFile();
         break;
       case 'upload':
-        fileInputRef.current.click();
+        fileInputRef.current?.click();
         break;
     }
   };
@@ -103,7 +103,7 @@ function App() {
             filter={searchText}
             onChange={(newData) => setFile(prevFile => ({ ...prevFile, data: newData }))}
             onStartRequest={(newStart) => setFile(prevFile => ({ ...prevFile, start: newStart }))}
-            onUploadRequest={() => fileInputRef.current.click()}
+            onUploadRequest={() => fileInputRef.current?.click()}
           />
         </Route>
         <Route path='/home'><Redirect to='/' /></Route>

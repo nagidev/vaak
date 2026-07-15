@@ -15,15 +15,15 @@ const TextArea = ({ placeholder = 'Enter text here...', value = '', onChange }: 
 	const [text, setText] = useState(value);
 	const [fullscreen, setFullscreen] = useState(false);
 
-	const fullscreenInputRef = useRef(null);
+	const fullscreenInputRef = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
 		onChange && onChange(text);
 	}, [text]);
 
 	useEffect(() => {
-		if (fullscreenInputRef.current && fullscreen) {
-			setTimeout(() => { fullscreenInputRef.current.focus(); }
+		if (fullscreen) {
+			setTimeout(() => { fullscreenInputRef.current?.focus(); }
 				, 100);
 		}
 	}, [fullscreen]);
