@@ -15,7 +15,7 @@ const TextArea = ({ placeholder = 'Enter text here...', value = '', onChange }: 
 	const [text, setText] = useState(value);
 	const [fullscreen, setFullscreen] = useState(false);
 
-	const fullscreenInputRef = useRef<HTMLInputElement>(null);
+	const fullscreenInputRef = useRef<HTMLTextAreaElement>(null);
 
 	useEffect(() => {
 		onChange && onChange(text);
