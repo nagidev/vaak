@@ -76,7 +76,7 @@ const Home = ({ start, value = {}, filter = '', onChange, onStartRequest, onUplo
 
 	return (
 		<div className='max-w-screen-xl p-2 mx-auto'>
-			{(Object.keys(data).length === 0) &&
+			{(Object.keys(data).length === 0 && filter === '') &&
 				<IllustratedMessage
 					Icon={IconBubble}
 					heading='Add dialogues.'
@@ -135,7 +135,7 @@ const Home = ({ start, value = {}, filter = '', onChange, onStartRequest, onUplo
 					Add dialogue
 				</Button>
 			</div>
-			{(Object.keys(data).length === 0) &&
+			{(Object.keys(data).length === 0 && filter === '') &&
 				<div className='flex flex-col items-stretch md:items-center'>
 					<div className='w-full my-10'>
 						<h1 className='text-center text-2xl text-white-hard font-bold'>Or</h1>

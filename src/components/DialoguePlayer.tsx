@@ -19,6 +19,8 @@ const DialoguePlayer = ({ startKey, data, onClose }: DialoguePlayerProps) => {
 	const [text, setText] = useState('');
 	const [options, setOptions] = useState<Option[]>([]);
 
+	const [typeIdx, setTypeIdx] = useState(0);
+
 	const handleClose = () => {
 		setPlaying(false);
 		onClose();
@@ -40,22 +42,36 @@ const DialoguePlayer = ({ startKey, data, onClose }: DialoguePlayerProps) => {
 			} else {
 				setOptions(newOptions.filter(option => option.text !== ''));
 			}
+			setTypeIdx(1);
 		}
 		else {
 			handleClose();
 		}
 	}, [currentKey]);
 
+	useEffect(() => {
+		if (typeIdx >= text.length) {
+			return;
+		}
+
+		const speed = 20;
+		const timeoutId = setTimeout(() => setTypeIdx(i => i + 1), speed);
+
+		return () => {
+			clearTimeout(timeoutId);
+		}
+	}, [typeIdx, currentKey, text]);
+
 	return (
 		<Dialogue
 			isOpen={playing}
 			onClose={handleClose}
 		>
-			<Debug>currentKey: {currentKey}</Debug>
+			<Debug>typeIdx: {typeIdx}</Debug>
 			<div className='flex flex-col gap-2'>
 				<h1 className='text-xl font-bold'>{speaker}</h1>
-				<h1 className='text-xl'>{text}</h1>
-				<div className='flex flex-row flex-wrap justify-end gap-2'>
+				<h1 className='text-xl'>{text.slice(0, typeIdx)}</h1>
+				<div className={`${(typeIdx !== text.length) && 'invisible'} flex flex-row flex-wrap justify-end gap-2`}>
 					{(options.length === 1 && options[0].text === '') ?
 						<Button
 							isQuiet={true}

@@ -44,7 +44,7 @@ const Dialogue = ({
 			className={`dialogue transition-all ${showing ? 'opacity-100' : 'opacity-0 invisible'} fixed top-0 left-0 z-10 w-full h-screen bg-base-hard/70 flex justify-center items-center content-center`}
 			onClick={(e) => { if (e.target === e.currentTarget) handleClose() }}
 		>
-			<div className={`transition-all p-4 ${showing ? '' : 'mt-10'} max-w-screen-lg rounded bg-base border border-base-soft shadow-xl`}>
+			<div className={`transition-all p-4 ${showing ? '' : 'mt-10'} min-w-sm max-w-screen-lg rounded bg-base border border-base-soft shadow-xl`}>
 				{children !== undefined ?
 					children
 					:

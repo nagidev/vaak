@@ -92,7 +92,7 @@ function App() {
         ]}
         selected={navTab}
         onCta={handleCta}
-        onSearch={setSearchText}
+        onSearch={(value) => {setSearchText(value); navigate('/')}}
       />
       <Debug>{JSON.stringify(searchText)}</Debug>
       <Switch>
